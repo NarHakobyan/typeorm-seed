@@ -1,14 +1,20 @@
-import * as yargs from 'yargs'
-import * as ora from 'ora'
-import * as chalk from 'chalk'
-import { importSeed } from '../importer'
-import { loadFiles, importFiles } from '../utils/file.util'
-import { runSeeder } from '../typeorm-seed'
-import { configureConnection, getConnectionOptions, ConnectionOptions, createConnection } from '../connection'
+import * as chalk from 'chalk';
+import * as ora from 'ora';
+import * as yargs from 'yargs';
+
+import {
+  configureConnection,
+  ConnectionOptions,
+  createConnection,
+  getConnectionOptions,
+} from '../connection';
+import { importSeed } from '../importer';
+import { runSeeder } from '../typeorm-seed';
+import { importFiles, loadFiles } from '../utils/file.util';
 
 export class SeedCommand implements yargs.CommandModule {
-  command = 'seed'
-  describe = 'Runs the seeds'
+  command = 'seed';
+  describe = 'Runs the seeds';
 
   builder(args: yargs.Argv) {
     return args
@@ -30,81 +36,88 @@ export class SeedCommand implements yargs.CommandModule {
       .option('seed', {
         alias: 's',
         describe: 'Specific seed class to run.',
-      })
+      });
   }
 
   async handler(args: yargs.Arguments) {
-    const log = console.log
-    const pkg = require('../../package.json')
-    log('🌱  ' + chalk.bold(`TypeORM Seeding v${(pkg as any).version}`))
-    const spinner = ora('Loading ormconfig').start()
+    const log = console.log;
+    const pkg = require('../../package.json');
+    log('🌱  ' + chalk.bold(`TypeORM Seeding v${pkg.version}`));
+    const spinner = ora('Loading ormconfig').start();
     const configureOption = {
       root: args.root as string,
       configName: args.configName as string,
       connection: args.connection as string,
-    }
+    };
 
     // Get TypeORM config file
-    let option: ConnectionOptions
+    let option: ConnectionOptions;
     try {
-      configureConnection(configureOption)
-      option = await getConnectionOptions()
-      spinner.succeed('ORM Config loaded')
+      configureConnection(configureOption);
+      option = await getConnectionOptions();
+      spinner.succeed('ORM Config loaded');
     } catch (error) {
-      panic(spinner, error, 'Could not load the config file!')
+      panic(spinner, error, 'Could not load the config file!');
     }
 
     // Find all factories and seed with help of the config
-    spinner.start('Import Factories')
-    const factoryFiles = loadFiles(option.factories)
+    spinner.start('Import Factories');
+    const factoryFiles = loadFiles(option.factories);
     try {
-      await importFiles(factoryFiles)
-      spinner.succeed('Factories are imported')
+      await importFiles(factoryFiles);
+      spinner.succeed('Factories are imported');
     } catch (error) {
-      panic(spinner, error, 'Could not import factories!')
+      panic(spinner, error, 'Could not import factories!');
     }
 
     // Show seeds in the console
-    spinner.start('Importing Seeders')
-    const seedFiles = loadFiles(option.seeds)
-    let seedFileObjects: any[] = []
+    spinner.start('Importing Seeders');
+    const seedFiles = loadFiles(option.seeds);
+    let seedFileObjects: any[] = [];
     try {
-      seedFileObjects = await Promise.all(seedFiles.map((seedFile) => importSeed(seedFile)))
+      seedFileObjects = await Promise.all(
+        seedFiles.map((seedFile) => importSeed(seedFile)),
+      );
       seedFileObjects = seedFileObjects.filter(
-        (seedFileObject) => args.seed === undefined || args.seed === seedFileObject.name,
-      )
-      spinner.succeed('Seeders are imported')
+        (seedFileObject) =>
+          args.seed === undefined || args.seed === seedFileObject.name,
+      );
+      spinner.succeed('Seeders are imported');
     } catch (error) {
-      panic(spinner, error, 'Could not import seeders!')
+      panic(spinner, error, 'Could not import seeders!');
     }
 
     // Get database connection and pass it to the seeder
-    spinner.start('Connecting to the database')
+    spinner.start('Connecting to the database');
     try {
-      await createConnection()
-      spinner.succeed('Database connected')
+      await createConnection();
+      spinner.succeed('Database connected');
     } catch (error) {
-      panic(spinner, error, 'Database connection failed! Check your typeORM config file.')
+      panic(
+        spinner,
+        error,
+        'Database connection failed! Check your typeORM config file.',
+      );
     }
 
     // Run seeds
     for (const seedFileObject of seedFileObjects) {
-      spinner.start(`Executing ${seedFileObject.name} Seeder`)
+      spinner.start(`Executing ${seedFileObject.name} Seeder`);
       try {
-        await runSeeder(seedFileObject)
-        spinner.succeed(`Seeder ${seedFileObject.name} executed`)
+        await runSeeder(seedFileObject);
+        spinner.succeed(`Seeder ${seedFileObject.name} executed`);
       } catch (error) {
-        panic(spinner, error, `Could not run the seed ${seedFileObject.name}!`)
+        panic(spinner, error, `Could not run the seed ${seedFileObject.name}!`);
       }
     }
 
-    log('👍 ', chalk.gray.underline(`Finished Seeding`))
-    process.exit(0)
+    log('👍 ', chalk.gray.underline('Finished Seeding'));
+    process.exit(0);
   }
 }
 
 function panic(spinner: ora.Ora, error: Error, message: string) {
-  spinner.fail(message)
-  console.error(error)
-  process.exit(1)
+  spinner.fail(message);
+  console.error(error);
+  process.exit(1);
 }

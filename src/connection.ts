@@ -1,112 +1,127 @@
 import {
-  ConnectionOptionsReader,
   Connection as TypeORMConnection,
   ConnectionOptions as TypeORMConnectionOptions,
+  ConnectionOptionsReader,
   createConnection as TypeORMCreateConnection,
   getConnection as TypeORMGetConnection,
-} from 'typeorm'
-import { printError } from './utils/log.util'
+} from 'typeorm';
 
-interface SeedingOptions {
-  factories: string[]
-  seeds: string[]
+import { printError } from './utils/log.util';
+
+interface ISeedingOptions {
+  factories: string[];
+  seeds: string[];
 }
 
-export declare type ConnectionOptions = TypeORMConnectionOptions & SeedingOptions
+export declare type ConnectionOptions = TypeORMConnectionOptions &
+  ISeedingOptions;
 
-export interface ConfigureOption {
-  root?: string
-  configName?: string
-  connection?: string
+export interface IConfigureOption {
+  root?: string;
+  configName?: string;
+  connection?: string;
 }
 
-const KEY = 'TypeORM_Seeding_Connection'
+const KEY = 'TypeORM_Seeding_Connection';
 
-const defaultConfigureOption: ConfigureOption = {
+const defaultConfigureOption: IConfigureOption = {
   root: process.cwd(),
   configName: '',
   connection: '',
-}
+};
 
 if ((global as any)[KEY] === undefined) {
-  ;(global as any)[KEY] = {
+  (global as any)[KEY] = {
     configureOption: defaultConfigureOption,
     ormConfig: undefined,
     connection: undefined,
     overrideConnectionOptions: {},
-  }
+  };
 }
 
-export const configureConnection = (option: ConfigureOption = {}) => {
-  ;(global as any)[KEY].configureOption = {
+export const configureConnection = (option: IConfigureOption = {}) => {
+  (global as any)[KEY].configureOption = {
     ...defaultConfigureOption,
     ...option,
-  }
-}
+  };
+};
 
-export const setConnectionOptions = (options: Partial<TypeORMConnectionOptions>): void => {
-  ;(global as any)[KEY].overrideConnectionOptions = options
-}
+export const setConnectionOptions = (
+  options: Partial<TypeORMConnectionOptions>,
+): void => {
+  (global as any)[KEY].overrideConnectionOptions = options;
+};
 
 export const getConnectionOptions = async (): Promise<ConnectionOptions> => {
-  const ormConfig = (global as any)[KEY].ormConfig
-  const overrideConnectionOptions = (global as any)[KEY].overrideConnectionOptions
+  const ormConfig = (global as any)[KEY].ormConfig;
+  const overrideConnectionOptions = (global as any)[KEY]
+    .overrideConnectionOptions;
   if (ormConfig === undefined) {
-    const configureOption = (global as any)[KEY].configureOption
-    const connection = configureOption.connection
+    const configureOption = (global as any)[KEY].configureOption;
+    const connection = configureOption.connection;
     const reader = new ConnectionOptionsReader({
       root: configureOption.root,
       configName: configureOption.configName,
-    })
-    let options = (await reader.all()) as any[]
+    });
+    let options = (await reader.all()) as any[];
     if (connection !== undefined && connection !== '') {
-      const filteredOptions = options.filter((o) => o.name === connection)
+      const filteredOptions = options.filter((o) => o.name === connection);
       if (filteredOptions.length === 1) {
-        options = filteredOptions
+        options = filteredOptions;
       }
     }
     if (options.length > 1) {
-      const filteredOptions = options.filter((o) => o.name === 'default')
+      const filteredOptions = options.filter((o) => o.name === 'default');
       if (filteredOptions.length === 1) {
-        options = filteredOptions
+        options = filteredOptions;
       }
     }
     if (options.length === 1) {
-      const option = options[0]
+      const option = options[0];
       if (!option.factories) {
-        option.factories = [process.env.TYPEORM_SEEDING_FACTORIES || 'src/database/factories/**/*{.ts,.js}']
+        option.factories = [
+          process.env.TYPEORM_SEEDING_FACTORIES ||
+            'src/database/factories/**/*{.ts,.js}',
+        ];
       }
       if (!option.seeds) {
-        option.seeds = [process.env.TYPEORM_SEEDING_SEEDS || 'src/database/seeds/**/*{.ts,.js}']
+        option.seeds = [
+          process.env.TYPEORM_SEEDING_SEEDS ||
+            'src/database/seeds/**/*{.ts,.js}',
+        ];
       }
-      ;(global as any)[KEY].ormConfig = {
+      (global as any)[KEY].ormConfig = {
         ...option,
         ...overrideConnectionOptions,
-      }
-      return (global as any)[KEY].ormConfig
+      };
+      return (global as any)[KEY].ormConfig;
     }
-    printError('There are multiple connections please provide a connection name')
+    printError(
+      'There are multiple connections please provide a connection name',
+    );
   }
-  return ormConfig
-}
+  return ormConfig;
+};
 
-export const createConnection = async (option?: TypeORMConnectionOptions): Promise<TypeORMConnection> => {
-  const configureOption = (global as any)[KEY].configureOption
-  let connection = (global as any)[KEY].connection
-  let ormConfig = (global as any)[KEY].ormConfig
+export const createConnection = async (
+  option?: TypeORMConnectionOptions,
+): Promise<TypeORMConnection> => {
+  const configureOption = (global as any)[KEY].configureOption;
+  let connection = (global as any)[KEY].connection;
+  let ormConfig = (global as any)[KEY].ormConfig;
 
   if (option !== undefined) {
-    ormConfig = option
+    ormConfig = option;
   }
 
   if (connection === undefined) {
     try {
-      connection = await TypeORMGetConnection(configureOption.name)
-    } catch (_) {}
+      connection = await TypeORMGetConnection(configureOption.name);
+    } catch {}
     if (connection === undefined) {
-      connection = await TypeORMCreateConnection(ormConfig)
+      connection = await TypeORMCreateConnection(ormConfig);
     }
-    ;(global as any)[KEY].connection = connection
+    (global as any)[KEY].connection = connection;
   }
-  return connection
-}
+  return connection;
+};

@@ -1,11 +1,12 @@
-import * as yargs from 'yargs'
-import * as chalk from 'chalk'
-import { printError } from '../utils/log.util'
-import { configureConnection, getConnectionOptions } from '../connection'
+import * as chalk from 'chalk';
+import * as yargs from 'yargs';
+
+import { configureConnection, getConnectionOptions } from '../connection';
+import { printError } from '../utils/log.util';
 
 export class ConfigCommand implements yargs.CommandModule {
-  command = 'config'
-  describe = 'Show the TypeORM config'
+  command = 'config';
+  describe = 'Show the TypeORM config';
 
   builder(args: yargs.Argv) {
     return args
@@ -23,25 +24,25 @@ export class ConfigCommand implements yargs.CommandModule {
         alias: 'root',
         default: process.cwd(),
         describe: 'Path to your typeorm config file',
-      })
+      });
   }
 
   async handler(args: yargs.Arguments) {
-    const log = console.log
-    const pkg = require('../../package.json')
-    log('🌱  ' + chalk.bold(`TypeORM Seeding v${(pkg as any).version}`))
+    const log = console.log;
+    const pkg = require('../../package.json');
+    log('🌱  ' + chalk.bold(`TypeORM Seeding v${pkg.version}`));
     try {
       configureConnection({
         root: args.root as string,
         configName: args.configName as string,
         connection: args.connection as string,
-      })
-      const option = await getConnectionOptions()
-      log(option)
+      });
+      const option = await getConnectionOptions();
+      log(option);
     } catch (error) {
-      printError('Could not find the orm config file', error)
-      process.exit(1)
+      printError('Could not find the orm config file', error);
+      process.exit(1);
     }
-    process.exit(0)
+    process.exit(0);
   }
 }
