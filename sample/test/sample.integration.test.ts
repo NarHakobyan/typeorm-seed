@@ -4,7 +4,7 @@ import {
   tearDownDatabase,
   factory,
   setConnectionOptions,
-} from '../../src/typeorm-seeds'
+} from '../../src/typeorm-seed'
 import { UserEntity } from '../entities/UserEntity'
 import { Connection } from 'typeorm'
 

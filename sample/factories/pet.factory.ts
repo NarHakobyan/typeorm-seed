@@ -1,5 +1,5 @@
 import * as faker from 'faker';
-import { define, factory } from '../../src/typeorm-seeds'
+import { define, factory } from '../../src/typeorm-seed'
 import { PetEntity } from '../entities/PetEntity'
 import { UserEntity } from '../entities/UserEntity'
 
