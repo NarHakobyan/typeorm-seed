@@ -2,7 +2,7 @@
   <img src="./logo.png" alt="logo" width="160" />
 </p>
 
-<h1 align="center" style="text-align: center;">TypeORM Seeding</h1>
+<h1 align="center" style="text-align: center;">TypeORM Seed</h1>
 
 <p align="center">
   <a href="https://www.npmjs.com/package/typeorm-seed">
