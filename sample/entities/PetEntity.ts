@@ -1,8 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm'
-import { User } from './User.entity'
+import { UserEntity } from './UserEntity'
 
 @Entity()
-export class Pet {
+export class PetEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string
 
@@ -12,7 +12,7 @@ export class Pet {
   @Column()
   age: number
 
-  @ManyToOne((type) => User, (user) => user.pets)
+  @ManyToOne((type) => UserEntity, (user) => user.pets)
   @JoinColumn({ name: 'user_id' })
-  user: User
+  user: UserEntity
 }

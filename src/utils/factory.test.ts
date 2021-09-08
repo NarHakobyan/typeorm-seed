@@ -9,7 +9,7 @@ describe('getNameOfClass', () => {
     const UserEntity = (): any => void 0
     expect(getNameOfEntity(UserEntity)).toBe('UserEntity')
   })
-  test('Passing undefinde as a enity-class should throw an error', () => {
+  test('Passing undefined as a enity-class should throw an error', () => {
     try {
       getNameOfEntity(undefined)
     } catch (error) {

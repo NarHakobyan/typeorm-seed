@@ -1,8 +1,8 @@
 import { Seeder, Factory } from '../../src/types'
-import { User } from '../entities/User.entity'
+import { UserEntity } from '../entities/UserEntity'
 
 export default class CreateUsers implements Seeder {
   public async run(factory: Factory): Promise<void> {
-    await factory(User)({ roles: [] }).createMany(10)
+    await factory(UserEntity)({ roles: [] }).createMany(10)
   }
 }

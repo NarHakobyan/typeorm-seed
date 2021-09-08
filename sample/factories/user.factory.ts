@@ -1,14 +1,14 @@
-import * as Faker from 'faker'
-import { define } from '../../src/typeorm-seeding'
-import { User } from '../entities/User.entity'
+import * as faker from 'faker';
+import { define } from '../../src/typeorm-seeds'
+import { UserEntity } from '../entities/UserEntity'
 
-define(User, (faker: typeof Faker) => {
+define(UserEntity, () => {
   const gender = faker.random.number(1)
   const firstName = faker.name.firstName(gender)
   const lastName = faker.name.lastName(gender)
   const email = faker.internet.email(firstName, lastName)
 
-  const user = new User()
+  const user = new UserEntity()
   user.firstName = firstName
   user.lastName = lastName
   user.middleName = null

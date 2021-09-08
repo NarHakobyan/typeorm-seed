@@ -3,7 +3,7 @@ import * as ora from 'ora'
 import * as chalk from 'chalk'
 import { importSeed } from '../importer'
 import { loadFiles, importFiles } from '../utils/file.util'
-import { runSeeder } from '../typeorm-seeding'
+import { runSeeder } from '../typeorm-seeds'
 import { configureConnection, getConnectionOptions, ConnectionOptions, createConnection } from '../connection'
 
 export class SeedCommand implements yargs.CommandModule {

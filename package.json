@@ -1,11 +1,11 @@
 {
-  "name": "typeorm-seeding",
-  "version": "1.6.0",
+  "name": "typeorm-seeds",
+  "version": "1.0.0",
   "description": "🌱 A delightful way to seed test data into your database.",
   "license": "MIT",
-  "author": "Gery Hirschfeld <gery.hirschfeld@w3tec.ch> (https://github.com/hirsch88)",
-  "main": "dist/typeorm-seeding.js",
-  "types": "dist/typeorm-seeding.d.ts",
+  "author": "Narek Hakobyan <narek.hakobyan.07@gmail.com> (https://github.com/NarHakobyan)",
+  "main": "dist/typeorm-seeds.js",
+  "types": "dist/typeorm-seeds.d.ts",
   "bin": {
     "typeorm-seeding": "dist/cli.js"
   },
@@ -31,16 +31,13 @@
   },
   "devDependencies": {
     "@semantic-release/git": "^9.0.0",
-    "@types/bcryptjs": "^2.4.2",
     "@types/chalk": "^2.2.0",
-    "@types/faker": "^4.1.11",
     "@types/glob": "7.1.1",
     "@types/jest": "^25.2.1",
     "@types/node": "13.11.1",
     "@types/yargs": "^15.0.4",
     "@typescript-eslint/eslint-plugin": "^2.27.0",
     "@typescript-eslint/parser": "^2.27.0",
-    "bcryptjs": "^2.4.3",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.10.1",
     "eslint-plugin-import": "^2.20.2",
@@ -56,7 +53,6 @@
   },
   "dependencies": {
     "chalk": "^4.0.0",
-    "faker": "4.1.0",
     "glob": "7.1.6",
     "ora": "4.0.3",
     "reflect-metadata": "0.1.13",

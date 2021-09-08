@@ -1,4 +1,3 @@
-import * as Faker from 'faker'
 import { ObjectType } from 'typeorm'
 import { FactoryFunction, EntityProperty } from './types'
 import { isPromiseLike } from './utils/factory.util'
@@ -90,7 +89,7 @@ export class EntityFactory<Entity, Context> {
 
   private async makeEnity(overrideParams: EntityProperty<Entity> = {}, isSeeding = false): Promise<Entity> {
     if (this.factory) {
-      let entity = await this.resolveEntity(this.factory(Faker, this.context), isSeeding)
+      let entity = await this.resolveEntity(this.factory(this.context), isSeeding)
       if (this.mapFunction) {
         entity = await this.mapFunction(entity)
       }

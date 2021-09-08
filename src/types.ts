@@ -1,4 +1,3 @@
-import * as Faker from 'faker'
 import { Connection, ObjectType } from 'typeorm'
 
 import { EntityFactory } from './entity-factory'
@@ -6,7 +5,7 @@ import { EntityFactory } from './entity-factory'
 /**
  * FactoryFunction is the fucntion, which generate a new filled entity
  */
-export type FactoryFunction<Entity, Context> = (faker: typeof Faker, context?: Context) => Entity
+export type FactoryFunction<Entity, Context> = (context?: Context) => Entity
 
 /**
  * EntityProperty defines an object whose keys and values must be properties of the given Entity.

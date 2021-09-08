@@ -1,9 +1,9 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany, BeforeInsert } from 'typeorm'
 import * as bcrypt from 'bcryptjs'
-import { Pet } from './Pet.entity'
+import { PetEntity } from './PetEntity'
 
 @Entity()
-export class User {
+export class UserEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string
 
@@ -19,8 +19,8 @@ export class User {
   @Column()
   email: string
 
-  @OneToMany((type) => Pet, (pet) => pet.user)
-  pets: Pet[]
+  @OneToMany(() => PetEntity, (petEntity) => petEntity.user)
+  pets: PetEntity[]
 
   @Column({ type: 'varchar', length: 100, nullable: false })
   password: string

@@ -25,3 +25,5 @@ node_modules/
 ### templates ###
 tmp
 old
+
+.idea
